@@ -1,0 +1,19 @@
+{
+  "name": "identity-service",
+  "version": "1.0.0",
+  "description": "Authentication flow mainly for user management",
+  "scripts": {
+    "dev": "sls offline start --aws-profile FintakIdentityAccount && export AWS_SDK_LOAD_CONFIG=1",
+    "publish": "sls deploy --aws-profile FintakIdentityAccount"
+  },
+  "dependencies": {
+    "aws-sdk": "^2.1692.0",
+    "crypto": "^1.0.1",
+    "joi": "^17.13.3",
+    "serverless-http": "^3.2.0"
+  },
+  "devDependencies": {
+    "serverless-offline": "^14.3.4",
+    "typescript": "^5.7.2"
+  }
+}

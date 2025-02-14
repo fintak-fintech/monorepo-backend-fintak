@@ -1,0 +1,57 @@
+# "org" ensures this Service is used with the correct Serverless Framework Access Key.
+org: fintak
+
+app: identity-service
+# "service" is the name of this project. This will also be added to your AWS resource names.
+service: identity-service
+
+plugins:
+  - serverless-offline
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  region: us-east-1
+  stage: ${opt:stage, 'dev'}
+  environment:
+    CLIENT_ID: ${ssm:/COGNITO_CLIENT_ID}
+    CLIENT_SECRET: ${ssm:/COGNITO_CLIENT_SECRET}
+    ENV: ${self:provider.stage}
+
+functions:
+  confirmation-password:
+    handler: handlers/confirmation-password.handler
+    events:
+      - httpApi:
+          path: /auth/confirmation-password
+          method: post
+  forgot-password:
+    handler: handlers/forgot-password.handler
+    events:
+      - httpApi:
+          path: /auth/forgot-password
+          method: post
+  verification-email:
+    handler: handlers/verification-email.handler
+    events:
+      - httpApi:
+          path: /auth/verification-email
+          method: post
+  login:
+    handler: handlers/login.handler
+    events:
+      - httpApi:
+          path: /auth/login
+          method: post
+  register:
+    handler: handlers/signup.handler
+    events:
+      - httpApi:
+          path: /auth/signup
+          method: post
+  logout:
+    handler: handlers/logout.handler
+    events:
+      - httpApi:
+          path: /auth/logout
+          method: post
