@@ -1,7 +1,7 @@
 # "org" ensures this Service is used with the correct Serverless Framework Access Key.
 org: fintak
 
-app: identity-service
+app: fintak
 # "service" is the name of this project. This will also be added to your AWS resource names.
 service: identity-service
 
@@ -14,16 +14,18 @@ provider:
   region: us-east-1
   stage: ${opt:stage, 'dev'}
   environment:
-    CLIENT_ID: ${ssm:/COGNITO_CLIENT_ID}
-    CLIENT_SECRET: ${ssm:/COGNITO_CLIENT_SECRET}
+    COGNITO_DEV_CLIENT_ID: ${ssm:/COGNITO_DEV_CLIENT_ID}
+    COGNITO_DEV_CLIENT_SECRET: ${ssm:/COGNITO_DEV_CLIENT_SECRET}
+    # CLIENT_ID: ${ssm:/COGNITO_CLIENT_ID}
+    # CLIENT_SECRET: ${ssm:/COGNITO_CLIENT_SECRET}
     ENV: ${self:provider.stage}
 
 functions:
-  confirmation-password:
-    handler: handlers/confirmation-password.handler
+  reset-password:
+    handler: handlers/reset-password.handler
     events:
       - httpApi:
-          path: /auth/confirmation-password
+          path: /auth/reset-password
           method: post
   forgot-password:
     handler: handlers/forgot-password.handler
@@ -55,3 +57,27 @@ functions:
       - httpApi:
           path: /auth/logout
           method: post
+
+resources:
+  Resources:
+    MyLambdaFunctionRole:
+      Type: AWS::IAM::Role
+      Properties:
+        AssumeRolePolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Principal:
+                Service: lambda.amazonaws.com
+              Action: sts:AssumeRole
+        Policies:
+          - PolicyName: CloudWatchLogsPolicy
+            PolicyDocument:
+              Version: '2012-10-17'
+              Statement:
+                - Effect: Allow
+                  Action:
+                    - logs:CreateLogGroup
+                    - logs:CreateLogStream
+                    - logs:PutLogEvents
+                  Resource: "*"

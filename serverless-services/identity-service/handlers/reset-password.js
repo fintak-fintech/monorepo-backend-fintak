@@ -3,11 +3,11 @@ const { CLIENT_ID } = require("../utils/const");
 const { generateSecretHash } = require("../utils/utils");
 const ErrorHandler = require("../utils/ErrorHandler");
 const validateSchema = require("../utils/validateSchema");
-const { confirmationPasswordSchema } = require("../schemas/confirmationPasswordSchema");
+const { resetPasswordSchema } = require("../schemas/resetPasswordSchema");
 
 const cognito = new AWS.CognitoIdentityServiceProvider({});
 
-const confirmationPassword = async (event) => {  
+const resetPassword = async (event) => {  
   const { email, confirmation_code, password } = JSON.parse(event.body);
 
   if (!email || !confirmation_code || !password) {
@@ -35,4 +35,4 @@ const confirmationPassword = async (event) => {
   }
 };
 
-module.exports.handler = validateSchema({ body: confirmationPasswordSchema })(confirmationPassword);
+module.exports.handler = validateSchema({ body: resetPasswordSchema })(resetPassword);
