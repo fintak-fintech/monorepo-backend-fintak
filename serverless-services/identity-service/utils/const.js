@@ -1,5 +1,5 @@
-const CLIENT_ID = process.env.CLIENT_ID;
-const CLIENT_SECRET = process.env.CLIENT_SECRET;
+const CLIENT_ID = process.env.ENV === "dev" ? process.env.COGNITO_DEV_CLIENT_ID : process.env.CLIENT_ID;
+const CLIENT_SECRET = process.env.ENV === "dev" ? process.env.COGNITO_DEV_CLIENT_SECRET : process.env.CLIENT_SECRET;
 
 const VERIFY_USER_STATUS = {
     NO_VERIFY: 'no_verify',

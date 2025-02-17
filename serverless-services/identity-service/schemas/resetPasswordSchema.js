@@ -1,6 +1,6 @@
 const Joi = require("joi");
 
-const confirmationPasswordSchema = Joi.object({
+const resetPasswordSchema = Joi.object({
   email: Joi.string().email().required().messages({
     "string.base": "email_should_be_text",
     "string.email": "email_invalid",
@@ -22,5 +22,5 @@ const confirmationPasswordSchema = Joi.object({
 });
 
 module.exports = {
-  confirmationPasswordSchema,
+  resetPasswordSchema,
 };
