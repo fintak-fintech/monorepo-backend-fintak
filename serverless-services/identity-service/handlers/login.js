@@ -35,6 +35,11 @@ const resendEmailCode = async (email) => {
 };
 
 const login = async (event) => {
+  if (!event.body) {
+    const message = 'Body is required';
+    ErrorHandler.logError(new Error(message), { email }, "auth_login");
+    return ErrorHandler.validationError(message, ['email_password_required'], 422);
+  }
   const { email, password } = JSON.parse(event.body);
 
   if (!email || !password) {
@@ -86,8 +91,9 @@ const login = async (event) => {
     }
 
     const data = removeUserResponseInformation(responseUserData);
-    if (!data.user_is_verified)
+    if (!data.email_verified && !data.phone_number_verified) {
       data.user_is_verified = VERIFY_USER_STATUS.NO_VERIFY;
+    } else data.user_is_verified = VERIFY_USER_STATUS.VERIFY;
 
     return {
       statusCode: 200,

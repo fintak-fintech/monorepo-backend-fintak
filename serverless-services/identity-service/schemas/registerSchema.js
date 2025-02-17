@@ -26,15 +26,13 @@ const registerSchema = Joi.object({
       "any.only": "password_must_match",
       "any.required": "confirm_password_required",
     }),
-  document_id: Joi.number().optional().messages({
-    "string.base": "invalid_document_id",
-    "any.required": "document_id_required",
-  }),
-  document_type: Joi.string().optional().messages({
-    "string.base": "invalid_document_type",
-    "any.required": "document_type_required",
-  }),
-});
+  phone_number: Joi.string()
+    .pattern(/^\+?[1-9]\d{1,14}$/
+    ).optional().messages({
+      "string.base": "invalid_phone_number",
+      "any.required": "phone_number_required",
+    }),
+  });
 
 module.exports = {
   registerSchema,
