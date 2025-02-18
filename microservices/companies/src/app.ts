@@ -14,8 +14,7 @@ import {
 import { validateSchema } from "./middlewares/validation";
 import { companySchema, searchCompanySchema } from "./validators/company";
 import { rateLimiter } from "./middlewares/rateLimiter";
-
-dotenv.config()
+import { authMiddleware } from './middlewares/authMiddleware';
 
 const app = express();
 app.use(express.json());
@@ -24,15 +23,17 @@ app.use(cors());
 app.use(json());
 app.use(urlencoded({ extended: true }));
 
-app.get("/companies", rateLimiter, getCompaniesController);
+app.get("/companies", authMiddleware, rateLimiter, getCompaniesController);
 app.post(
   "/companies",
+  authMiddleware,
   rateLimiter,
   (req, res, next) => validateSchema(req, res, next, { body: companySchema }),
   createCompanyController
 );
 app.put(
   "/companies/:id",
+  authMiddleware,
   rateLimiter,
   (req, res, next) =>
     validateSchema(req, res, next, {
@@ -41,7 +42,7 @@ app.put(
     }),
   updateCompanyController
 );
-app.delete("/companies/:id", deleteCompanyController);
+app.delete("/companies/:id", authMiddleware, deleteCompanyController);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
