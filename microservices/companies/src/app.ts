@@ -1,4 +1,6 @@
-import dotenv from "dotenv"
+import dotenv from "dotenv";
+dotenv.config({ path: '/workspaces/fintak/.env' }); 
+
 import express from "express";
 import helmet from 'helmet';
 import cors from 'cors';

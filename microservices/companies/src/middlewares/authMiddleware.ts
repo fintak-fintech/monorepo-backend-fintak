@@ -1,7 +1,6 @@
-import dotenv from 'dotenv'
+import dotenv from 'dotenv';
+dotenv.config({ path: '/workspaces/fintak/.env' }); // Specify the path to the .env file
 import { Request, Response, NextFunction } from 'express'
-
-dotenv.config()
 
 export const authMiddleware = (
   req: Request,
