@@ -11,7 +11,7 @@
   },
   "include": [
     "services/**/*"
-  ],
+, "microservices/loans/src/controllers/simulateLoanController.ts"  ],
   "exclude": [
     "node_modules",
     "**/*.spec.ts"
