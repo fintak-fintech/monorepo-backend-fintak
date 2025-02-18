@@ -6,8 +6,8 @@ import {
     getLoansController,
     createLoanController,
     updateLoanController,
-    deleteLoanController,
-} from './controllers';
+} from './controllers/loanController';
+import { simulateLoan } from './controllers/simulateloanController';
 
 const app = express();
 app.use(express.json());
@@ -19,7 +19,8 @@ app.use(urlencoded({ extended: true }));
 app.get('/loans', getLoansController);
 app.post('/loans', createLoanController);
 app.put('/loans/:id', updateLoanController);
-app.delete('/loans/:id', deleteLoanController);
+
+app.post('/simulate-loan', simulateLoan);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
