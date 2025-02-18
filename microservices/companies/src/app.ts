@@ -11,6 +11,7 @@ import {
   updateCompanyController,
   deleteCompanyController,
 } from "./controllers";
+import { loginController } from './controllers/authController';
 import { validateSchema } from "./middlewares/validation";
 import { companySchema, searchCompanySchema } from "./validators/company";
 import { rateLimiter } from "./middlewares/rateLimiter";
@@ -43,6 +44,8 @@ app.put(
   updateCompanyController
 );
 app.delete("/companies/:id", authMiddleware, deleteCompanyController);
+
+app.post('/login', loginController);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
