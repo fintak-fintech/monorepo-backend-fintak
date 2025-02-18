@@ -1,7 +1,7 @@
 import dotenv from 'dotenv'
-import { Request, Response, NextFunction } from 'express'
+dotenv.config({path: '/workspace/microservices/.env'})
 
-dotenv.config()
+import { Request, Response, NextFunction } from 'express'
 
 export const authMiddleware = (
   req: Request,

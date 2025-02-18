@@ -1,3 +1,6 @@
+import dotenv from 'dotenv'
+dotenv.config({path: '/workspaces/fintak/microservices/.env'})
+
 import express from "express";
 import helmet from 'helmet';
 import cors from 'cors';
