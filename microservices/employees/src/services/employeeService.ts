@@ -44,5 +44,9 @@ export const updateEmployee = async (id: string, employeeData: {
 };
 
 export const deleteEmployee = async (id: string) => {
-    await db.query('DELETE FROM employees WHERE id = $1', [id]);
+    const result = await db.query(
+        `UPDATE employees SET status = '0', updated_at = CURRENT_TIMESTAMP WHERE id = $1 RETURNING *`,
+        [id]
+    );
+    return result.rows[0];
 };
