@@ -24,11 +24,21 @@ export const createEmployee = async (employeeData: {
     return result.rows[0];
 };
 
-export const updateEmployee = async (id: string, employeeData: { name: string; position: string }) => {
-    const { name, position } = employeeData;
+export const updateEmployee = async (id: string, employeeData: { 
+    first_name: string; 
+    last_name: string; 
+    email: string; 
+    position: string; 
+    salary: number; 
+    company_id: string; 
+    status: string; 
+}) => {
+    const { first_name, last_name, email, position, salary, company_id, status } = employeeData;
     const result = await db.query(
-        'UPDATE employees SET name = $1, position = $2 WHERE id = $3 RETURNING *',
-        [name, position, id]
+        `UPDATE employees SET 
+            first_name = $1, last_name = $2, email = $3, position = $4, salary = $5, company_id = $6, status = $7, updated_at = CURRENT_TIMESTAMP 
+        WHERE id = $8 RETURNING *`,
+        [first_name, last_name, email, position, salary, company_id, status, id]
     );
     return result.rows[0];
 };
