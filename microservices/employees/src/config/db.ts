@@ -1,6 +1,8 @@
 import { Pool } from 'pg';
+import dotenv from 'dotenv';
+dotenv.config({ path: '/workspaces/fintak/.env' });
 
-export const db = new Pool({
+const pool = new Pool({
     user: process.env.DB_USER,
     host: process.env.DB_HOST,
     database: process.env.DB_NAME,
@@ -8,10 +10,16 @@ export const db = new Pool({
     port: Number(process.env.DB_PORT),
 });
 
-db.on('connect', () => {
+
+pool.on('connect', () => {
     console.log('Connected to the PostgreSQL database');
 });
 
-db.on('error', (err) => {
+
+pool.on('error', (err) => {
     console.error('Error connecting to the PostgreSQL database', err);
 });
+
+export const db = {
+    query: (text: string, params?: any[]) => pool.query(text, params),
+};
