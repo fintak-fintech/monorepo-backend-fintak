@@ -5,11 +5,21 @@ export const getEmployees = async () => {
     return result.rows;
 };
 
-export const createEmployee = async (employeeData: { name: string; position: string }) => {
-    const { name, position } = employeeData;
+export const createEmployee = async (employeeData: { 
+    first_name: string; 
+    last_name: string; 
+    email: string; 
+    position: string; 
+    salary: number; 
+    company_id: string; 
+    status: string; 
+}) => {
+    const { first_name, last_name, email, position, salary, company_id, status } = employeeData;
     const result = await db.query(
-        'INSERT INTO employees (name, position) VALUES ($1, $2) RETURNING *',
-        [name, position]
+        `INSERT INTO employees (
+            first_name, last_name, email, position, salary, company_id, status
+        ) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *`,
+        [first_name, last_name, email, position, salary, company_id, status]
     );
     return result.rows[0];
 };

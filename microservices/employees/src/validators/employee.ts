@@ -1,8 +1,12 @@
 import Joi from 'joi';
 
 export const employeeSchema = Joi.object({
-    name: Joi.string().required(),
+    first_name: Joi.string().required(),
+    last_name: Joi.string().required(),
     position: Joi.string().required(),
+    email: Joi.string().email().required(),
+    salary: Joi.number().required(),
+    company_id: Joi.string().required(),
 });
 
 
