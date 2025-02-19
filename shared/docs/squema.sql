@@ -185,3 +185,18 @@ CREATE TABLE Interest_Charges (
     fintak_fee_percentage DECIMAL(5,2) NOT NULL,
     fintak_fee_amount DECIMAL(18,2) NOT NULL
 );
+
+CREATE TABLE Employees (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    first_name VARCHAR(100) NOT NULL,
+    last_name VARCHAR(100) NOT NULL,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    position VARCHAR(100) NOT NULL,
+    salary DECIMAL(18,2) NOT NULL,
+    status VARCHAR(50) NOT NULL,
+    company_id UUID not NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
