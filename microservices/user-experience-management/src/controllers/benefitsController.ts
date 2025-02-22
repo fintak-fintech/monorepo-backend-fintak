@@ -5,6 +5,7 @@ import {
   updateBenefit,
   deleteBenefit,
   toggleBenefitStatus,
+  getBenefitById,
 } from '../services/benefitService';
 
 // Get all benefits
@@ -65,5 +66,17 @@ export const toggleBenefitStatusController = async (req: Request, res: Response)
     res.status(200).json(updatedBenefit);
   } catch (error) {
     res.status(500).json({ error: 'Failed to update benefit status' });
+  }
+};
+
+export const getBenefitByIdController = async (
+  req: Request,
+  res: Response
+) => {
+  try {
+    const benefit = await getBenefitById(req.params.id);
+    res.status(200).json(benefit);
+  } catch (error) {
+    res.status(500).json({ error: (error as Error).message });
   }
 };
