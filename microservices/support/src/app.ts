@@ -1,3 +1,4 @@
+import dotenv from "dotenv";
 import express from "express";
 import helmet from "helmet";
 import cors from "cors";
@@ -8,6 +9,10 @@ import {
   createRequestController,
   updateRequestStatusController,
 } from "./controllers/requestsController";
+import { validateSchema } from "./middlewares/validation";
+import { requestIdSchema, requestSchema } from "./validators/requestsSchema";
+
+dotenv.config();
 
 const app = express();
 app.use(express.json());
@@ -17,9 +22,15 @@ app.use(json());
 app.use(urlencoded({ extended: true }));
 
 app.get("/requests", getRequestsController);
-app.get("/requests/:id", getRequestDetailController);
-app.post("/requests", createRequestController);
-app.put("/requests/:id/status", updateRequestStatusController);
+app.get("/requests/:id",
+  (req, res, next) => validateSchema(req, res, next, { query: requestIdSchema }),
+  getRequestDetailController);
+app.post("/requests",
+  (req, res, next) => validateSchema(req, res, next, { body: requestSchema }),
+  createRequestController);
+app.put("/requests/:id/status",
+  (req, res, next) => validateSchema(req, res, next, { query: requestIdSchema }),
+  updateRequestStatusController);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

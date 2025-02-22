@@ -1,12 +1,15 @@
-import { db } from "../config/db";
+import { queryDatabase } from "../config/db";
 
 export const getUserPermissions = async (userId: string) => {
-  const query = `
+  const result = queryDatabase({
+    query: `
       SELECT p.name
       FROM users_permissions up
       JOIN permissions p ON up.permission_id = p.id
       WHERE up.user_id = $1
-    `;
-  const { rows } = await db.query(query, [userId]);
+    `,
+    params: [userId],
+  });
+  const rows = (await result).rows;
   return rows.map((row: { name: string }) => row.name);
 };

@@ -5,6 +5,7 @@ import {
   updateTip,
   deleteTip,
   toggleTipStatus,
+  getTipById,
 } from '../services/tipService';
 
 // Get all tips
@@ -65,5 +66,18 @@ export const toggleTipStatusController = async (req: Request, res: Response) => 
     res.status(200).json(updatedTip);
   } catch (error) {
     res.status(500).json({ error: 'Failed to update tip status' });
+  }
+};
+
+
+export const getTipByIdController = async (
+  req: Request,
+  res: Response
+) => {
+  try {
+    const tip = await getTipById(req.params.id);
+    res.status(200).json(tip);
+  } catch (error) {
+    res.status(500).json({ error: (error as Error).message });
   }
 };
