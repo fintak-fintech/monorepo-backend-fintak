@@ -102,6 +102,7 @@ const login = async (event) => {
         refreshToken,
         user: {
           ...data,
+          role: responseUserData?.role ?? 'n/a',
         },
       }),
     };
