@@ -14,6 +14,7 @@ const signUp = async (event) => {
     phone_number,
     password,
     confirm_password,
+    role,
   } =
     JSON.parse(event.body);
 
@@ -30,7 +31,7 @@ const signUp = async (event) => {
     );
   }
 
-  if (!email || !password) {
+  if (!email || !password || !role) {
     ErrorHandler.logError(
       new Error("All fields are required"),
       { email },
@@ -51,6 +52,7 @@ const signUp = async (event) => {
       UserAttributes: [
         { Name: "email", Value: email },
         { Name: "phone_number", Value: phone_number },
+        { Name: "custom:role", Value: role ?? 'user_employee' },
         ],
       SecretHash: generateSecretHash(email),
     };
