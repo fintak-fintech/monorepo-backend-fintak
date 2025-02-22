@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "description": "Authentication flow mainly for user management",
   "scripts": {
-    "dev": "sls offline start --aws-profile FintakAccountDev && export AWS_SDK_LOAD_CONFIG=1",
-    "publish": "sls deploy --aws-profile FintakAccountDev"
+    "dev": "sls offline start --aws-profile FintakIdentityAccountDev && export AWS_SDK_LOAD_CONFIG=1",
+    "publish": "sls deploy --aws-profile FintakIdentityAccountDev"
   },
   "dependencies": {
     "aws-sdk": "^2.1692.0",
