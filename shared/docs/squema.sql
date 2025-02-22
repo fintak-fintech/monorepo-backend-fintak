@@ -1,14 +1,49 @@
-CREATE TABLE Users (
+CREATE TABLE Users_Companies (
     cognito_sub UUID PRIMARY KEY,
-    first_name VARCHAR(100) NOT NULL,
-    last_name VARCHAR(100) NOT NULL,
+    first_name VARCHAR(255) NOT NULL,
+    last_name VARCHAR(255) NOT NULL,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    position VARCHAR(255),
+    status VARCHAR(50) NOT NULL,
+    salary DECIMAL(10,2),
+    company_id UUID NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE Users_Financials (
+    cognito_sub UUID PRIMARY KEY,
+    first_name VARCHAR(255) NOT NULL,
+    last_name VARCHAR(255) NOT NULL,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    position VARCHAR(255),
+    status VARCHAR(50) NOT NULL,
+    financials_id UUID NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE Admins (
+    cognito_sub UUID PRIMARY KEY,
+    first_name VARCHAR(255) NOT NULL,
+    last_name VARCHAR(255) NOT NULL,
     email VARCHAR(255) UNIQUE NOT NULL,
     status VARCHAR(50) NOT NULL,
-    company_id UUID REFERENCES Companies(id),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    identification_number VARCHAR(50) UNIQUE NOT NULL,
-    document_type VARCHAR(50) NOT NULL
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE Employees (
+    cognito_sub UUID PRIMARY KEY,
+    first_name VARCHAR(255) NOT NULL,
+    last_name VARCHAR(255) NOT NULL,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    position VARCHAR(255),
+    status VARCHAR(50) NOT NULL,
+    salary DECIMAL(10,2),
+    company_id UUID NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE Companies (
@@ -33,7 +68,7 @@ CREATE TABLE Roles (
 );
 
 CREATE TABLE Users_roles (
-    user_id UUID REFERENCES Users(cognito_sub),
+    user_id UUID,
     role_id UUID REFERENCES Roles(id),
     PRIMARY KEY (user_id, role_id)
 );
@@ -54,7 +89,7 @@ CREATE TABLE Roles_Permissions (
 
 CREATE TABLE Loans (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    user_id UUID REFERENCES Users(cognito_sub),
+    employee_id UUID,
     amount DECIMAL(18,2) NOT NULL,
     term INT NOT NULL,
     interest_rate DECIMAL(5,2) NOT NULL,
@@ -77,7 +112,7 @@ CREATE TABLE Guarantee_Documents (
 
 CREATE TABLE Electronic_Signatures (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    user_id UUID REFERENCES Users(cognito_sub),
+    employee_id UUID,
     document_id UUID NOT NULL,
     hash_signature TEXT NOT NULL,
     signature_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -87,7 +122,7 @@ CREATE TABLE Electronic_Signatures (
 
 CREATE TABLE Transactions (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    user_id UUID REFERENCES Users(cognito_sub),
+    user_id UUID,
     transaction_type VARCHAR(100) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -96,7 +131,7 @@ CREATE TABLE Transactions (
 
 CREATE TABLE Monthly_Statements (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    user_id UUID REFERENCES Users(cognito_sub),
+    user_id UUID,
     month VARCHAR(10) NOT NULL,
     total_due DECIMAL(18,2) NOT NULL,
     outstanding_balance DECIMAL(18,2) NOT NULL,
@@ -106,20 +141,20 @@ CREATE TABLE Monthly_Statements (
 
 CREATE TABLE Employee_Discounts_Files (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    company_id UUID REFERENCES Companies(id),
+    company_id UUID,
     file_path TEXT NOT NULL,
     status VARCHAR(50) NOT NULL,
     total_employees INT NOT NULL,
     total_amount DECIMAL(18,2) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    generated_by UUID REFERENCES Users(cognito_sub)
+    generated_by UUID
 );
 
 CREATE TABLE Support_Requests (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    company_id UUID REFERENCES Companies(id),
-    user_id UUID REFERENCES Users(cognito_sub),
+    company_id UUID,
+    user_id UUID,
     request_type VARCHAR(100) NOT NULL,
     request_description TEXT NOT NULL,
     status VARCHAR(50) NOT NULL,
@@ -146,7 +181,7 @@ CREATE TABLE Tips (
 
 CREATE TABLE Simulations (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    user_id UUID REFERENCES Users(cognito_sub),
+    user_id UUID,
     simulation_type VARCHAR(50) NOT NULL,
     amount DECIMAL(18,2) NOT NULL,
     term INT NOT NULL,
@@ -158,7 +193,7 @@ CREATE TABLE Simulations (
 
 CREATE TABLE Products_Promotions (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    company_id UUID REFERENCES Companies(id),
+    company_id UUID,
     product_name VARCHAR(255) NOT NULL,
     product_description TEXT NOT NULL,
     price DECIMAL(18,2) NOT NULL,
@@ -169,7 +204,7 @@ CREATE TABLE Products_Promotions (
 
 CREATE TABLE Product_Purchases (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    user_id UUID REFERENCES Users(cognito_sub),
+    user_id UUID,
     product_promotion_id UUID REFERENCES Products_Promotions(id),
     amount DECIMAL(18,2) NOT NULL,
     purchase_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -178,7 +213,7 @@ CREATE TABLE Product_Purchases (
 
 CREATE TABLE Interest_Charges (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    company_id UUID REFERENCES Companies(id),
+    company_id UUID,
     month VARCHAR(10) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     total_interest DECIMAL(18,2) NOT NULL,
