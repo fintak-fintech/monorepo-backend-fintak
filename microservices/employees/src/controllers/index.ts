@@ -14,9 +14,14 @@ export const createEmployeeController = async (req: Request, res: Response) => {
     try {
         req.body.status = "1"; 
         await createEmployee(req.body);
-        res.status(201).json( { message: 'Employee created successfully' });
+        res.status(201).json({ message: 'Employee created successfully' });
     } catch (error) {
-        res.status(500).json({ error: (error as Error).message });
+        const err = error as Error;
+        if (err.message === 'Employee with this identification number or email already exists') {
+            res.status(400).json({ error: err.message });
+        } else {
+            res.status(500).json({ error: (error as Error).message });
+        }
     }
 };
 

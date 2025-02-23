@@ -19,6 +19,11 @@ export const createEmployee = async (employeeData: {
     status: string; 
 }) => {
     const { cognito_sub, first_name, last_name, identification_number, email, position, depto, phone, salary, company_id, status } = employeeData;
+    const isDuplicate = await checkDuplicateEmployee(identification_number, email);
+    if (isDuplicate) {
+        throw new Error('Employee with this identification number or email already exists');
+    }
+
     const result = await db.query(
         `INSERT INTO employees (
             cognito_sub, first_name, last_name, identification_number, email, position, depto, phone, salary, company_id, status
@@ -26,6 +31,14 @@ export const createEmployee = async (employeeData: {
         [cognito_sub, first_name, last_name, identification_number, email, position, depto, phone, salary, company_id, status]
     );
     return result.rows[0];
+};
+
+export const checkDuplicateEmployee = async (identification_number: string, email: string) => {
+    const result = await db.query(
+        `SELECT * FROM employees WHERE identification_number = $1 OR email = $2`,
+        [identification_number, email]
+    );
+    return result.rows.length > 0;
 };
 
 export const updateEmployee = async (id: string, employeeData: { 
