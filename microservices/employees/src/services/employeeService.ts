@@ -6,20 +6,24 @@ export const getEmployees = async () => {
 };
 
 export const createEmployee = async (employeeData: { 
+    cognito_sub: string;
     first_name: string; 
     last_name: string; 
+    identification_number: string;
     email: string; 
     position: string; 
+    depto: string;
+    phone: string;
     salary: number; 
     company_id: string; 
     status: string; 
 }) => {
-    const { first_name, last_name, email, position, salary, company_id, status } = employeeData;
+    const { cognito_sub, first_name, last_name, identification_number, email, position, depto, phone, salary, company_id, status } = employeeData;
     const result = await db.query(
         `INSERT INTO employees (
-            first_name, last_name, email, position, salary, company_id, status
-        ) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *`,
-        [first_name, last_name, email, position, salary, company_id, status]
+            cognito_sub, first_name, last_name, identification_number, email, position, depto, phone, salary, company_id, status
+        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING *`,
+        [cognito_sub, first_name, last_name, identification_number, email, position, depto, phone, salary, company_id, status]
     );
     return result.rows[0];
 };

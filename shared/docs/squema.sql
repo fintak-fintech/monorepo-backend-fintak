@@ -35,16 +35,20 @@ CREATE TABLE Admins (
 
 CREATE TABLE Employees (
     cognito_sub UUID PRIMARY KEY,
-    first_name VARCHAR(255) NOT NULL,
-    last_name VARCHAR(255) NOT NULL,
+    first_name VARCHAR(100) NOT NULL,
+    last_name VARCHAR(100) NOT NULL,
+    identification_number VARCHAR(50) NOT NULL,
     email VARCHAR(255) UNIQUE NOT NULL,
-    position VARCHAR(255),
+    position VARCHAR(100),
+    depto VARCHAR(100),
+    phone VARCHAR(20),
+    salary DECIMAL(18,2) NOT NULL,
     status VARCHAR(50) NOT NULL,
-    salary DECIMAL(10,2),
     company_id UUID NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
 
 CREATE TABLE Companies (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -219,17 +223,4 @@ CREATE TABLE Interest_Charges (
     total_interest DECIMAL(18,2) NOT NULL,
     fintak_fee_percentage DECIMAL(5,2) NOT NULL,
     fintak_fee_amount DECIMAL(18,2) NOT NULL
-);
-
-CREATE TABLE Employees (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    first_name VARCHAR(100) NOT NULL,
-    last_name VARCHAR(100) NOT NULL,
-    email VARCHAR(255) UNIQUE NOT NULL,
-    position VARCHAR(100) NOT NULL,
-    salary DECIMAL(18,2) NOT NULL,
-    status VARCHAR(50) NOT NULL,
-    company_id UUID not NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
