@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-dotenv.config({ path: '/workspaces/fintak/.env' }); 
+dotenv.config(); 
 
 import express from "express";
 import helmet from 'helmet';

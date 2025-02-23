@@ -1,6 +1,6 @@
 import { Pool } from 'pg';
 import dotenv from 'dotenv';
-dotenv.config({ path: '/workspaces/fintak/.env' });
+dotenv.config();
 
 const pool = new Pool({
     user: process.env.DB_USER,
