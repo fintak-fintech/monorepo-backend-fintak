@@ -1,6 +1,3 @@
-import dotenv from 'dotenv'
-dotenv.config({path: '../employees/.env'})
-
 import express from "express";
 import helmet from 'helmet';
 import cors from 'cors';
