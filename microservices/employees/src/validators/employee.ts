@@ -13,6 +13,16 @@ export const employeeSchema = Joi.object({
     company_id: Joi.string().required(),
 });
 
+export const editemployeeSchema = Joi.object({
+    first_name: Joi.string().optional(),
+    last_name: Joi.string().optional(),
+    email: Joi.string().email().optional(),
+    position: Joi.string().optional(),
+    depto: Joi.string().optional(),
+    phone: Joi.string().optional(),
+    salary: Joi.number().optional(),
+    company_id: Joi.string().optional(),
+});
 
 export const searchEmployeeSchema = Joi.object({
     id: Joi.string().required(),

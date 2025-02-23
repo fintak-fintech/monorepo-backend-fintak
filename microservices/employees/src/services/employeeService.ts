@@ -41,7 +41,7 @@ export const checkDuplicateEmployee = async (identification_number: string, emai
     return result.rows.length > 0;
 };
 
-export const updateEmployee = async (id: string, employeeData: { 
+export const updateEmployee = async (identification_number: string, employeeData: { 
     first_name: string; 
     last_name: string; 
     email: string; 
@@ -50,12 +50,37 @@ export const updateEmployee = async (id: string, employeeData: {
     company_id: string; 
     status: string; 
 }) => {
-    const { first_name, last_name, email, position, salary, company_id, status } = employeeData;
+    const { first_name, last_name, email, position, salary, company_id } = employeeData;
+
+    const employee = await findByEmployeeID(identification_number);
+    if (!employee) {
+        throw new Error('Employee not found');
+    }
+
+    if (first_name != "") {
+        employee.first_name = first_name;
+    }
+    if (last_name != "") {
+        employee.last_name = last_name;
+    }
+    if (email != "") {
+        employee.email = email;
+    }
+    if (position != "") {
+        employee.position = position;
+    }
+    if (salary != 0) {
+        employee.salary = salary;
+    }
+    if (company_id != "") {
+        employee.company_id = company_id;
+    }
+
     const result = await db.query(
         `UPDATE employees SET 
-            first_name = $1, last_name = $2, email = $3, position = $4, salary = $5, company_id = $6, status = $7, updated_at = CURRENT_TIMESTAMP 
-        WHERE id = $8 RETURNING *`,
-        [first_name, last_name, email, position, salary, company_id, status, id]
+            first_name = $1, last_name = $2, email = $3, position = $4, salary = $5, company_id = $6, updated_at = CURRENT_TIMESTAMP 
+        WHERE identification_number = $7 RETURNING *`,
+        [first_name, last_name, email, position, salary, company_id, identification_number]
     );
     return result.rows[0];
 };
