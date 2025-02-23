@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { getCompanies, createCompany, updateCompany, deleteCompany } from '../services/companyService';
+import { getCompanies, createCompany, updateCompany, deleteCompany, toggleCompanyStatus } from '../services/companyService';
 
 export const getCompaniesController = async (req: Request, res: Response) => {
     try {
@@ -35,10 +35,12 @@ export const updateCompanyController = async (req: Request, res: Response) => {
     }
 };
 
-export const deleteCompanyController = async (req: Request, res: Response) => {
+export const toggleCompanyStatusController = async (req: Request, res: Response) => {
     try {
-        await deleteCompany(req.params.id);
-        res.status(204).send();
+        const { nit } = req.params;
+        const { status } = req.body;
+        await toggleCompanyStatus(nit, status);
+        res.status(200).json({ message: 'Company edited successfully' });
     } catch (error) {
         res.status(500).json({ error: (error as Error).message });
     }

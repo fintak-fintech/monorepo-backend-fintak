@@ -88,10 +88,22 @@ export const findByCompanyByNit = async (nit: string) => {
     return result.rows[0];
 };
 
-export const deleteCompany = async (id: string) => {
+export const deleteCompany = async (nit: string, status: string) => {
+    console.log(nit, status);
     const result = await db.query(
-        `UPDATE companies SET status = '0', updated_at = CURRENT_TIMESTAMP WHERE id = $1 RETURNING *`,
-        [id]
+        `UPDATE companies SET status = $1, updated_at = CURRENT_TIMESTAMP WHERE nit = $2 RETURNING *`,
+        [status, nit]
     );
+    console.log(result.rows[0]);
     return result.rows[0];
+};
+
+export const toggleCompanyStatus = async (nit: string, status: string) => {
+    const company = await findByCompanyByNit(nit);
+    if (!company) {
+        throw new Error('Company not found');
+    }
+    status = status ? "1" : "0";
+    const result = await deleteCompany(nit, status);
+    return result.rows;
 };

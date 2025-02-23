@@ -9,11 +9,11 @@ import {
   getCompaniesController,
   createCompanyController,
   updateCompanyController,
-  deleteCompanyController,
+  toggleCompanyStatusController,
 } from "./controllers";
 import { validateSchema } from "./middlewares/validation";
 
-import { companySchema, searchCompanySchema, searchCompanyIDschema, editCompanySchema } from "./validators/company";
+import { companySchema, searchCompanySchema, searchCompanyIDschema, editCompanySchema, statusSchema } from "./validators/company";
 import { rateLimiter } from "./middlewares/rateLimiter";
 
 const app = express();
@@ -42,6 +42,15 @@ app.put(
   updateCompanyController
 );
 
+app.patch(
+  "/companies/:nit/status",
+  (req, res, next) =>
+    validateSchema(req, res, next, {
+      body: statusSchema,
+      params: searchCompanyIDschema,
+    }),
+  toggleCompanyStatusController
+);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

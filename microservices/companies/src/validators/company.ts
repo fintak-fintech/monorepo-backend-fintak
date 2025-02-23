@@ -25,6 +25,10 @@ export const searchCompanyIDschema = Joi.object({
   nit: Joi.string().required(),
 });
 
+export const statusSchema = Joi.object({
+  status: Joi.boolean().required(),
+});
+
 export const searchCompanySchema = Joi.object({
   id: Joi.string().required(),
 });
