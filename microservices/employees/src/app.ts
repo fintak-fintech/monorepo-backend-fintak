@@ -11,7 +11,6 @@ import {
   updateEmployeeController,
   deleteEmployeeController,
 } from "./controllers";
-import { loginController } from "./controllers/authController";
 import { employeeSchema, searchEmployeeSchema } from "./validators/employee";
 import { validateSchema } from "./middlewares/validation";
 
@@ -38,8 +37,6 @@ app.put(
   updateEmployeeController
 );
 app.delete("/employees/:id", deleteEmployeeController);
-
-app.post("/login", loginController);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
