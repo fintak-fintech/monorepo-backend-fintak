@@ -8,7 +8,7 @@ import {
   updateEmployeeController,
   toggleEmployeeStatusController,
 } from "./controllers";
-import { employeeSchema, searchEmployeeSchema, statusSchema, searchEmployeeIDSchema } from "./validators/employee";
+import { employeeSchema, searchEmployeeSchema, editemployeeSchema, statusSchema, searchEmployeeIDSchema } from "./validators/employee";
 import { validateSchema } from "./middlewares/validation";
 
 const app = express();
@@ -25,11 +25,11 @@ app.post(
   createEmployeeController
 );
 app.put(
-  "/employees/:id",
+  "/employees/:identification_number",
   (req, res, next) =>
     validateSchema(req, res, next, {
-      body: employeeSchema,
-      params: searchEmployeeSchema,
+      body: editemployeeSchema,
+      params: searchEmployeeIDSchema,
     }),
   updateEmployeeController
 );
