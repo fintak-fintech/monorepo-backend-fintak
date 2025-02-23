@@ -1,5 +1,5 @@
 import dotenv from 'dotenv'
-dotenv.config({path: '/workspaces/fintak/microservices/.env'})
+dotenv.config({path: '../employees/.env'})
 
 import express from "express";
 import helmet from 'helmet';
