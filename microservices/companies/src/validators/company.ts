@@ -10,6 +10,21 @@ export const companySchema = Joi.object({
   company_type: Joi.string().required(),
 });
 
+
+export const editCompanySchema = Joi.object({
+  name: Joi.string().optional(),
+  nit: Joi.string().optional(),
+  address: Joi.string().optional(),
+  phone: Joi.string().optional(),
+  contact_email: Joi.string().email().required(),
+  logo_url: Joi.string().uri().optional(),
+  company_type: Joi.string().optional(),
+});
+
+export const searchCompanyIDschema = Joi.object({
+  nit: Joi.string().required(),
+});
+
 export const searchCompanySchema = Joi.object({
   id: Joi.string().required(),
 });

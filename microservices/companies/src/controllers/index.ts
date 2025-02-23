@@ -27,8 +27,9 @@ export const createCompanyController = async (req: Request, res: Response) => {
 
 export const updateCompanyController = async (req: Request, res: Response) => {
     try {
-        const company = await updateCompany(req.params.id, req.body);
-        res.status(200).json(company);
+        const { nit } = req.params;
+        await updateCompany(nit, req.body);
+        res.status(200).json({ message: 'Company edit successfully' });
     } catch (error) {
         res.status(500).json({ error: (error as Error).message });
     }

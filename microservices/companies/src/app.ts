@@ -12,7 +12,8 @@ import {
   deleteCompanyController,
 } from "./controllers";
 import { validateSchema } from "./middlewares/validation";
-import { companySchema, searchCompanySchema } from "./validators/company";
+
+import { companySchema, searchCompanySchema, searchCompanyIDschema, editCompanySchema } from "./validators/company";
 import { rateLimiter } from "./middlewares/rateLimiter";
 
 const app = express();
@@ -29,13 +30,14 @@ app.post(
   (req, res, next) => validateSchema(req, res, next, { body: companySchema }),
   createCompanyController
 );
+
 app.put(
-  "/companies/:id",
+  "/companies/:nit",
   rateLimiter,
   (req, res, next) =>
     validateSchema(req, res, next, {
-      body: companySchema,
-      params: searchCompanySchema,
+      body:  editCompanySchema,
+      params: searchCompanyIDschema,
     }),
   updateCompanyController
 );

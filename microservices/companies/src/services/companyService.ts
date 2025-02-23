@@ -38,21 +38,52 @@ export const checkDuplicateCompany = async (nit: string) => {
     return result.rows.length > 0;
 };
 
-export const updateCompany = async (id: string, companyData: { 
+export const updateCompany = async (nit: string, companyData: { 
     name: string; 
     address: string; 
     phone: string; 
     contact_email: string; 
-    status: string; 
     logo_url?: string; 
     company_type: string; 
 }) => {
-    const { name, address, phone, contact_email, status, logo_url, company_type } = companyData;
+    const { name, address, phone, contact_email, logo_url, company_type } = companyData;
+    const company = await findByCompanyByNit(nit);
+    if (!company) {
+        throw new Error('Company not found');
+    }
+
+    if (name != "") {
+        company.name = name;
+    }
+    if (address != "") {
+        company.address = address;
+    }
+    if (phone != "") {
+        company.phone = phone;
+    }
+    if (contact_email != "") {
+        company.contact_email = contact_email;
+    }
+    if (logo_url != "") {
+        company.logo_url = logo_url;
+    }
+    if (company_type != "") {
+        company.company_type = company_type;
+    }
+
     const result = await db.query(
         `UPDATE companies SET 
-            name = $1, address = $2, phone = $3, contact_email = $4, status = $5, logo_url = $6, company_type = $7, updated_at = CURRENT_TIMESTAMP 
-        WHERE id = $8 RETURNING *`,
-        [name, address, phone, contact_email, status, logo_url, company_type, id]
+            name = $1, address = $2, phone = $3, contact_email = $4, logo_url = $5, company_type = $6, updated_at = CURRENT_TIMESTAMP 
+        WHERE nit = $7 RETURNING *`,
+        [name, address, phone, contact_email, logo_url, company_type, nit]
+    );
+    return result.rows[0];
+};
+
+export const findByCompanyByNit = async (nit: string) => {
+    const result = await db.query(
+        `SELECT * FROM companies WHERE nit = $1`,
+        [nit]
     );
     return result.rows[0];
 };
