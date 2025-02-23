@@ -1,14 +1,36 @@
 -- Mock Data for PostgreSQL Database Schema
+INSERT INTO Employees (cognito_sub, first_name, last_name, email, position, status, salary, company_id, created_at, updated_at) VALUES
+('550e8400-e29b-41d4-a716-446655440000', 'John', 'Doe', 'julian.perez@fintak.com.co', 'Software Engineer', 'active', 75000.00, '123e4567-e89b-12d3-a456-426614174000', NOW(), NOW()),
+('550e8400-e29b-41d4-a716-446655440001', 'Jane', 'Smith', 'jane.smith@example.com', 'Project Manager', 'active', 92000.00, '123e4567-e89b-12d3-a456-426614174001', NOW(), NOW()),
+('550e8400-e29b-41d4-a716-446655440002', 'Mike', 'Johnson', 'mike.johnson@example.com', 'Data Analyst', 'inactive', 68000.00, '123e4567-e89b-12d3-a456-426614174002', NOW(), NOW()),
+('550e8400-e29b-41d4-a716-446655440003', 'Emily', 'Davis', 'emily.davis@example.com', 'HR Specialist', 'active', 60000.00, '123e4567-e89b-12d3-a456-426614174003', NOW(), NOW()),
+('550e8400-e29b-41d4-a716-446655440004', 'Robert', 'Brown', 'robert.brown@example.com', 'Marketing Manager', 'suspended', 85000.00, '123e4567-e89b-12d3-a456-426614174004', NOW(), NOW());
 
--- Insert Users
-INSERT INTO Users (cognito_sub, first_name, last_name, email, status, company_id, created_at, updated_at, identification_number, document_type) VALUES
-('sub123', 'John', 'Doe', 'johndoe@example.com', 'active', 1, NOW(), NOW(), '123456789', 'CC'),
-('sub124', 'Jane', 'Smith', 'janesmith@example.com', 'active', 2, NOW(), NOW(), '987654321', 'CC');
+INSERT INTO Admins (cognito_sub, first_name, last_name, email, status, created_at, updated_at) VALUES
+('550e8400-e29b-41d4-a716-446655440010', 'Alice', 'Walker', 'alice.walker@example.com', 'active', NOW(), NOW()),
+('550e8400-e29b-41d4-a716-446655440011', 'Bob', 'Miller', 'bob.miller@example.com', 'inactive', NOW(), NOW()),
+('550e8400-e29b-41d4-a716-446655440012', 'Charlie', 'White', 'charlie.white@example.com', 'active', NOW(), NOW()),
+('550e8400-e29b-41d4-a716-446655440013', 'Diana', 'Evans', 'diana.evans@example.com', 'suspended', NOW(), NOW()),
+('550e8400-e29b-41d4-a716-446655440014', 'Edward', 'King', 'edward.king@example.com', 'active', NOW(), NOW());
+
+INSERT INTO Users_Financials (cognito_sub, first_name, last_name, email, position, status, financials_id, created_at, updated_at) VALUES
+('550e8400-e29b-41d4-a716-446655440020', 'Fiona', 'Black', 'fiona.black@example.com', 'Accountant', 'active', '123e4567-e89b-12d3-a456-426614174010', NOW(), NOW()),
+('550e8400-e29b-41d4-a716-446655440021', 'George', 'Anderson', 'george.anderson@example.com', 'Finance Analyst', 'inactive', '123e4567-e89b-12d3-a456-426614174011', NOW(), NOW()),
+('550e8400-e29b-41d4-a716-446655440022', 'Hannah', 'Moore', 'hannah.moore@example.com', 'CFO', 'active', '123e4567-e89b-12d3-a456-426614174012', NOW(), NOW()),
+('550e8400-e29b-41d4-a716-446655440023', 'Ian', 'Clark', 'ian.clark@example.com', 'Bookkeeper', 'suspended', '123e4567-e89b-12d3-a456-426614174013', NOW(), NOW()),
+('550e8400-e29b-41d4-a716-446655440024', 'Jessica', 'Hall', 'jessica.hall@example.com', 'Financial Advisor', 'active', '123e4567-e89b-12d3-a456-426614174014', NOW(), NOW());
+
+INSERT INTO Users_Companies (cognito_sub, first_name, last_name, email, position, status, salary, company_id, created_at, updated_at) VALUES
+('550e8400-e29b-41d4-a716-446655440030', 'Kevin', 'Johnson', 'kevin.johnson@example.com', 'Software Engineer', 'active', 80000.00, '123e4567-e89b-12d3-a456-426614174020', NOW(), NOW()),
+('550e8400-e29b-41d4-a716-446655440031', 'Laura', 'Davis', 'laura.davis@example.com', 'HR Manager', 'active', 75000.00, '123e4567-e89b-12d3-a456-426614174021', NOW(), NOW()),
+('550e8400-e29b-41d4-a716-446655440032', 'Mark', 'Thompson', 'mark.thompson@example.com', 'Sales Executive', 'inactive', 68000.00, '123e4567-e89b-12d3-a456-426614174022', NOW(), NOW()),
+('550e8400-e29b-41d4-a716-446655440033', 'Natalie', 'Brown', 'natalie.brown@example.com', 'Marketing Coordinator', 'suspended', 62000.00, '123e4567-e89b-12d3-a456-426614174023', NOW(), NOW()),
+('550e8400-e29b-41d4-a716-446655440034', 'Oliver', 'Martinez', 'oliver.martinez@example.com', 'Operations Manager', 'active', 90000.00, '123e4567-e89b-12d3-a456-426614174024', NOW(), NOW());
 
 -- Insert Companies
 INSERT INTO Companies (id, name, address, phone, contact_email, status, created_at, updated_at, logo_url, company_type) VALUES
-(1, 'Company A', '123 St', '1234567890', 'contact@companya.com', 'active', NOW(), NOW(), 'logo_url_a', 'finance'),
-(2, 'Company B', '456 St', '0987654321', 'contact@companyb.com', 'active', NOW(), NOW(), 'logo_url_b', 'tech');
+('550e8400-e29b-41d4-a716-446655440134', 'Company A', '123 St', '1234567890', 'contact@companya.com', 'active', NOW(), NOW(), 'logo_url_a', 'finance'),
+('550e8400-e29b-41d4-a716-446655440135', 'Company B', '456 St', '0987654321', 'contact@companyb.com', 'active', NOW(), NOW(), 'logo_url_b', 'tech');
 
 -- Insert Roles
 INSERT INTO Roles (id, name, description, created_at, updated_at) VALUES

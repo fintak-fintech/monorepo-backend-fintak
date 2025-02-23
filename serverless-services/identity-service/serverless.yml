@@ -16,8 +16,6 @@ provider:
   environment:
     COGNITO_DEV_CLIENT_ID: ${ssm:/COGNITO_DEV_CLIENT_ID}
     COGNITO_DEV_CLIENT_SECRET: ${ssm:/COGNITO_DEV_CLIENT_SECRET}
-    # CLIENT_ID: ${ssm:/COGNITO_CLIENT_ID}
-    # CLIENT_SECRET: ${ssm:/COGNITO_CLIENT_SECRET}
     ENV: ${self:provider.stage}
 
 functions:
@@ -45,7 +43,7 @@ functions:
       - httpApi:
           path: /auth/login
           method: post
-  register:
+  signup:
     handler: handlers/signup.handler
     events:
       - httpApi:
