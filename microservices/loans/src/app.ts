@@ -1,28 +1,74 @@
-import express from 'express';
-import helmet from 'helmet';
-import cors from 'cors';
-import { json, urlencoded } from 'body-parser';
+import dotenv from "dotenv";
+import express from "express";
+import helmet from "helmet";
+import cors from "cors";
+import { json, urlencoded } from "body-parser";
 import {
-    getLoansController,
-    createLoanController,
-    updateLoanController,
-} from './controllers/loanController';
-import { simulateLoan } from './controllers/simulateloanController';
+  getLoansController,
+  createLoanController,
+  getLoanByIdController,
+  getLoansByUserIdController,
+} from "./controllers/loanController";
+import {
+  getLastSimulationByUserController,
+  getSimulationsByUserController,
+  simulateLoan,
+} from "./controllers/simulateLoanController";
+import { validateSchema } from "./middlewares/validation";
+import { loanIdSchema, loanSchema } from "./validators/loanSchema";
+import { simulateLoanSchema, userIdSchema } from "./validators/simulationSchema";
 
-const app = express();
+dotenv.config();
+
+let app = express();
 app.use(express.json());
 app.use(helmet());
 app.use(cors());
 app.use(json());
 app.use(urlencoded({ extended: true }));
 
-app.get('/loans', getLoansController);
-app.post('/loans', createLoanController);
-app.put('/loans/:id', updateLoanController);
+app.use((req, res, next) => {
+  const method = req.method.toLowerCase();
+  const SUPPORTED_METHODS = ["get", "post", "put", "patch"];
+  if (!SUPPORTED_METHODS.includes(method)) {
+    return res.status(400).json({ error: "incorrect petition, try again" });
+  }
 
-app.post('/simulate-loan', simulateLoan);
+  // logger.info(`Request URL: ${req.originalUrl}`);
+  next();
+});
+
+app.get("/loans", getLoansController);
+app.post(
+  "/loans",
+  (req, res, next) => validateSchema(req, res, next, { body: loanSchema }),
+  createLoanController
+);
+app.get(
+  "/loans/:id",
+  (req, res, next) => validateSchema(req, res, next, { params: loanIdSchema }),
+  getLoanByIdController
+);
+app.get(
+  "/loans/user/:userId",
+  (req, res, next) => validateSchema(req, res, next, { params: userIdSchema }),
+  getLoansByUserIdController
+);
+
+app.post("/simulate-loan",
+  (req, res, next) => validateSchema(req, res, next, { body: simulateLoanSchema }),
+  simulateLoan
+);
+app.get("/simulations/:userId",
+  (req, res, next) => validateSchema(req, res, next, { query: userIdSchema }),
+  getSimulationsByUserController
+);
+app.get("/last-simulation/:userId",
+  (req, res, next) => validateSchema(req, res, next, { query: userIdSchema }),
+  getLastSimulationByUserController
+);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+  console.log(`Server is running on port ${PORT}`);
 });
