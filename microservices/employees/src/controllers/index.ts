@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { getEmployees, createEmployee, updateEmployee, deleteEmployee } from '../services/employeeService';
+import { getEmployees, createEmployee, updateEmployee, deleteEmployee, toggleEmployeeStatus } from '../services/employeeService';
 
 export const getEmployeesController = async (req: Request, res: Response) => {
     try {
@@ -34,10 +34,12 @@ export const updateEmployeeController = async (req: Request, res: Response) => {
     }
 };
 
-export const deleteEmployeeController = async (req: Request, res: Response) => {
+export const toggleEmployeeStatusController = async (req: Request, res: Response) => {
     try {
-        await deleteEmployee(req.params.id);
-        res.status(204).send();
+        const { identification_number } = req.params;
+        const { status } = req.body;
+        await toggleEmployeeStatus(identification_number, status);
+        res.status(200).json({ message: 'Employee edited successfully' });
     } catch (error) {
         res.status(500).json({ error: (error as Error).message });
     }

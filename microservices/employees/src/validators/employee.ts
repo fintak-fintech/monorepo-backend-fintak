@@ -17,3 +17,11 @@ export const employeeSchema = Joi.object({
 export const searchEmployeeSchema = Joi.object({
     id: Joi.string().required(),
 });
+
+export const searchEmployeeIDSchema = Joi.object({
+    identification_number: Joi.string().required(),
+});
+
+export const statusSchema = Joi.object({
+    status: Joi.boolean().required(),
+  });

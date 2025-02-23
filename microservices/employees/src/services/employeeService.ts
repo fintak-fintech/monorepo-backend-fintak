@@ -60,10 +60,28 @@ export const updateEmployee = async (id: string, employeeData: {
     return result.rows[0];
 };
 
-export const deleteEmployee = async (id: string) => {
+export const deleteEmployee = async (identification_number: string, status: string) => {
     const result = await db.query(
-        `UPDATE employees SET status = '0', updated_at = CURRENT_TIMESTAMP WHERE id = $1 RETURNING *`,
-        [id]
+        `UPDATE employees SET status = $1, updated_at = CURRENT_TIMESTAMP WHERE identification_number = $2 RETURNING *`,
+        [status, identification_number]
     );
     return result.rows[0];
+};
+
+export const findByEmployeeID = async (identification_number: string) => {
+    const result = await db.query(
+        `SELECT * FROM employees WHERE identification_number = $1`,
+        [identification_number]
+    );
+    return result.rows[0];
+};
+
+export const toggleEmployeeStatus = async (identification_number: string, status: string) => {
+    const employee = await findByEmployeeID(identification_number);
+    if (!employee) {
+        throw new Error('Employee not found');
+    }
+    status = status ? "1" : "0";
+    const result = await deleteEmployee(identification_number,status);
+    return result.rows;
 };
