@@ -7,6 +7,7 @@ export const getCompanies = async () => {
 
 export const createCompany = async (companyData: { 
     name: string; 
+    nit: string;
     address: string; 
     phone: string; 
     contact_email: string; 
@@ -14,14 +15,27 @@ export const createCompany = async (companyData: {
     logo_url?: string; 
     company_type: string; 
 }) => {
-    const { name, address, phone, contact_email, status, logo_url, company_type } = companyData;
+    const { name, nit, address, phone, contact_email, status, logo_url, company_type } = companyData;
+    const isDuplicate = await checkDuplicateCompany(nit);
+    if (isDuplicate) {
+        throw new Error('Company with this nit already exists');
+    }
+
     const result = await db.query(
         `INSERT INTO companies (
-            name, address, phone, contact_email, status, logo_url, company_type
-        ) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *`,
-        [name, address, phone, contact_email, status, logo_url, company_type]
+            name, nit, address, phone, contact_email, status, logo_url, company_type
+        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *`,
+        [name, nit, address, phone, contact_email, status, logo_url, company_type]
     );
     return result.rows[0];
+};
+
+export const checkDuplicateCompany = async (nit: string) => {
+    const result = await db.query(
+        `SELECT * FROM companies WHERE nit = $1`,
+        [nit]
+    );
+    return result.rows.length > 0;
 };
 
 export const updateCompany = async (id: string, companyData: { 

@@ -12,10 +12,16 @@ export const getCompaniesController = async (req: Request, res: Response) => {
 
 export const createCompanyController = async (req: Request, res: Response) => {
     try {
-        const company = await createCompany(req.body);
-        res.status(201).json(company);
+        req.body.status = "1"; 
+        await createCompany(req.body);
+        res.status(201).json({ message: 'Company created successfully' });
     } catch (error) {
-        res.status(500).json({ error: (error as Error).message });
+        const err = error as Error;
+        if (err.message === 'Company with this nit already exists') {
+            res.status(400).json({ error: err.message });
+        } else {
+            res.status(500).json({ error: (error as Error).message });
+        }
     }
 };
 
