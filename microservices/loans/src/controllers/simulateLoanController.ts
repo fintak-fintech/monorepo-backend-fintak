@@ -1,24 +1,75 @@
 import { Request, Response } from 'express';
 import { getLastSimulationByUser, getSimulationsByUser, saveSimulation } from '../services/simulateLoanService';
+import { getInterestRate } from '../services/interestRateService';
 
-export const simulateLoan = async (req: Request, res: Response) => {
-  const { amount, term, annual_interest, user_id } = req.body;
+const MAX_AMOUNT = 50000;
+const MAX_TERM = 60;
 
-  if (!amount || !term || !annual_interest) {
+export const createSimulateLoanController = async (req: Request, res: Response) => {
+  const {
+    amount,
+    term,
+    annual_interest,
+    user_id,
+    company_id,
+  } = req.body;
+  let interest = annual_interest;
+
+  if (!amount || !term || !company_id) {
     return res.status(400).json({ message: "all_fields_required" });
   }
 
-  const monthly_interest = (annual_interest / 12) / 100;
+  if (amount > MAX_AMOUNT || term > MAX_TERM) {
+    return res.status(400).json({ message: "exceeds_allowed_limits" });
+  }
+
+  if (!interest) {
+    try {
+      const company_annual_interest = await getInterestRate(company_id);
+  
+      if (!company_annual_interest) {
+        return res.status(404).json({ message: "no_interest_rate_found" });
+      }
+      interest = company_annual_interest;
+    } catch (error) {
+      res.status(500).json({ message: "error_getting_interest_rate", error });
+    }
+  }
+
+  const monthly_interest = (interest / 12) / 100;
   const fee = (amount * monthly_interest) / (1 - Math.pow(1 + monthly_interest, -term));
+
+  const total_interest = (fee * term) - amount;
+  const total_cost = amount + total_interest;
+
+  let balance = amount;
+  const amortization_table = [];
+  for (let i = 1; i <= term; i++) {
+    const interest_payment = balance * monthly_interest;
+    const principal_payment = fee - interest_payment;
+    balance -= principal_payment;
+
+    amortization_table.push({
+      month: i,
+      interest_payment: interest_payment.toFixed(2),
+      principal_payment: principal_payment.toFixed(2),
+      total_payment: fee.toFixed(2),
+      remaining_balance: balance.toFixed(2)
+    });
+  }
 
   try {
     let result = {
-      amount: amount,
-      term: term,
-      annual_interest: annual_interest,
-      monthly_interest: monthly_interest,
+      amount,
+      term,
+      annual_interest,
+      monthly_interest,
       simulation_result: fee.toFixed(2),
-    }
+      total_interest: total_interest.toFixed(2),
+      total_cost: total_cost.toFixed(2),
+      amortization_table
+    };
+
     if (user_id) {
       await saveSimulation(user_id, amount, term, annual_interest, fee.toFixed(2));
     }

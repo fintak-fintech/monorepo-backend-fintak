@@ -11,7 +11,8 @@ import {
 // Get all benefits
 export const getBenefitsController = async (req: Request, res: Response) => {
   try {
-    const benefits = await getBenefits();
+    const { category, orderBy } = req.query;
+    const benefits = await getBenefits(String(category ?? ''), String(orderBy));
     res.status(200).json(benefits);
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch benefits' });

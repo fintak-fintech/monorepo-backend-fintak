@@ -167,8 +167,16 @@ CREATE TABLE Benefits (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     title VARCHAR(255) NOT NULL,
     description TEXT NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    category VARCHAR(100) NOT NULL,
+    conditions TEXT NOT NULL,
+    validity_start DATE NOT NULL,
+    validity_end DATE NOT NULL,
+    redemption_steps TEXT NOT NULL,
+    terms_and_conditions TEXT NOT NULL,
+    contact_info TEXT,
+    status VARCHAR(50) NOT NULL CHECK (status IN ('active', 'expired', 'upcoming')),
+    created_at TIMESTAMP DEFAULT NOW(),
+    updated_at TIMESTAMP DEFAULT NOW()
 );
 
 CREATE TABLE Tips (

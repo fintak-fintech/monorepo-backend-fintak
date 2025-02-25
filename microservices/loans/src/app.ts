@@ -8,11 +8,12 @@ import {
   createLoanController,
   getLoanByIdController,
   getLoansByUserIdController,
+  getListLoansByCompanyController,
 } from "./controllers/loanController";
 import {
   getLastSimulationByUserController,
   getSimulationsByUserController,
-  simulateLoan,
+  createSimulateLoanController,
 } from "./controllers/simulateLoanController";
 import { validateSchema } from "./middlewares/validation";
 import { loanIdSchema, loanSchema } from "./validators/loanSchema";
@@ -45,7 +46,7 @@ app.post(
   createLoanController
 );
 app.get(
-  "/loans/:id",
+  "/loans/:loan_id/user/:user_id",
   (req, res, next) => validateSchema(req, res, next, { params: loanIdSchema }),
   getLoanByIdController
 );
@@ -57,7 +58,7 @@ app.get(
 
 app.post("/simulate-loan",
   (req, res, next) => validateSchema(req, res, next, { body: simulateLoanSchema }),
-  simulateLoan
+  createSimulateLoanController
 );
 app.get("/simulations/:userId",
   (req, res, next) => validateSchema(req, res, next, { query: userIdSchema }),
@@ -66,6 +67,10 @@ app.get("/simulations/:userId",
 app.get("/last-simulation/:userId",
   (req, res, next) => validateSchema(req, res, next, { query: userIdSchema }),
   getLastSimulationByUserController
+);
+app.get("/loans/company/:company_id",
+  (req, res, next) => validateSchema(req, res, next, { query: userIdSchema }),
+  getListLoansByCompanyController
 );
 
 const PORT = process.env.PORT || 3000;
