@@ -1,0 +1,7 @@
+node_modules
+fintak.code-workspace
+package-lock.json
+
+.devcontainer/
+.vscode/
+.env

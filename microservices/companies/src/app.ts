@@ -1,4 +1,6 @@
-import dotenv from "dotenv"
+import dotenv from "dotenv";
+dotenv.config(); 
+
 import express from "express";
 import helmet from 'helmet';
 import cors from 'cors';
@@ -7,13 +9,12 @@ import {
   getCompaniesController,
   createCompanyController,
   updateCompanyController,
-  deleteCompanyController,
+  toggleCompanyStatusController,
 } from "./controllers";
 import { validateSchema } from "./middlewares/validation";
-import { companySchema, searchCompanySchema } from "./validators/company";
-import { rateLimiter } from "./middlewares/rateLimiter";
 
-dotenv.config()
+import { companySchema, searchCompanySchema, searchCompanyIDschema, editCompanySchema, statusSchema } from "./validators/company";
+import { rateLimiter } from "./middlewares/rateLimiter";
 
 const app = express();
 app.use(express.json());
@@ -29,17 +30,27 @@ app.post(
   (req, res, next) => validateSchema(req, res, next, { body: companySchema }),
   createCompanyController
 );
+
 app.put(
-  "/companies/:id",
+  "/companies/:nit",
   rateLimiter,
   (req, res, next) =>
     validateSchema(req, res, next, {
-      body: companySchema,
-      params: searchCompanySchema,
+      body:  editCompanySchema,
+      params: searchCompanyIDschema,
     }),
   updateCompanyController
 );
-app.delete("/companies/:id", deleteCompanyController);
+
+app.patch(
+  "/companies/:nit/status",
+  (req, res, next) =>
+    validateSchema(req, res, next, {
+      body: statusSchema,
+      params: searchCompanyIDschema,
+    }),
+  toggleCompanyStatusController
+);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
