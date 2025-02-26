@@ -17,7 +17,7 @@ export const createCompanyController = async (req: Request, res: Response) => {
         res.status(201).json({ message: 'Company created successfully' });
     } catch (error) {
         const err = error as Error;
-        if (err.message === 'Company with this nit already exists') {
+        if (err.message === 'Company with this identification_number already exists') {
             res.status(400).json({ error: err.message });
         } else {
             res.status(500).json({ error: (error as Error).message });
@@ -27,8 +27,8 @@ export const createCompanyController = async (req: Request, res: Response) => {
 
 export const updateCompanyController = async (req: Request, res: Response) => {
     try {
-        const { nit } = req.params;
-        await updateCompany(nit, req.body);
+        const { identification_number } = req.params;
+        await updateCompany(identification_number, req.body);
         res.status(200).json({ message: 'Company edit successfully' });
     } catch (error) {
         res.status(500).json({ error: (error as Error).message });
@@ -37,9 +37,9 @@ export const updateCompanyController = async (req: Request, res: Response) => {
 
 export const toggleCompanyStatusController = async (req: Request, res: Response) => {
     try {
-        const { nit } = req.params;
+        const { identification_number } = req.params;
         const { status } = req.body;
-        await toggleCompanyStatus(nit, status);
+        await toggleCompanyStatus(identification_number, status);
         res.status(200).json({ message: 'Company edited successfully' });
     } catch (error) {
         res.status(500).json({ error: (error as Error).message });

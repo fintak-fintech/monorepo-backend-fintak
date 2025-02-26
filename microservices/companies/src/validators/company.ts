@@ -2,7 +2,7 @@ import Joi from "joi";
 
 export const companySchema = Joi.object({
   name: Joi.string().required(),
-  nit: Joi.string().required(),
+  identification_number: Joi.string().required(),
   address: Joi.string().required(),
   phone: Joi.string().required(),
   contact_email: Joi.string().email().required(),
@@ -13,7 +13,7 @@ export const companySchema = Joi.object({
 
 export const editCompanySchema = Joi.object({
   name: Joi.string().optional(),
-  nit: Joi.string().optional(),
+  identification_number: Joi.string().optional(),
   address: Joi.string().optional(),
   phone: Joi.string().optional(),
   contact_email: Joi.string().email().required(),
@@ -22,7 +22,7 @@ export const editCompanySchema = Joi.object({
 });
 
 export const searchCompanyIDschema = Joi.object({
-  nit: Joi.string().required(),
+  identification_number: Joi.string().required(),
 });
 
 export const statusSchema = Joi.object({

@@ -1,5 +1,13 @@
 import { Request, Response } from "express";
-import { getLoans, createLoan, getLoansByUserId, getLoanById, getLoansByCompany } from "../services/loanService";
+import {
+  getLoans,
+  createLoan,
+  getLoansByUserId,
+  getLoanById,
+  getLoansByCompany,
+  updateApprovalDate,
+  updatePaymentDate,
+} from "../services/loanService";
 
 export const getLoansController = async (req: Request, res: Response) => {
   try {
@@ -37,9 +45,7 @@ export const getLoansByUserIdController = async (
   res: Response
 ) => {
   if (!req.params.userId) {
-    return res
-      .status(400)
-      .json({ error: 'user id is missing' });
+    return res.status(400).json({ error: "user id is missing" });
   }
 
   try {
@@ -67,4 +73,43 @@ export const getListLoansByCompanyController = async (
     console.error("Error al obtener préstamos:", err);
     res.status(500).json({ message: "Error interno del servidor" });
   }
-}
+};
+
+export const updateApprovalDateController = async (
+  req: Request,
+  res: Response
+) => {
+  if (!req.params.id) {
+    return res
+      .status(400)
+      .json({ error: 'loan_id_not_found' });
+  }
+
+  try {
+    const loan = await updateApprovalDate(
+      req.params.id,
+      req.body.approval_date
+    );
+    res.status(200).json(loan);
+  } catch (error) {
+    res.status(500).json({ error: (error as Error).message });
+  }
+};
+
+export const updatePaymentDateController = async (
+  req: Request,
+  res: Response
+) => {
+  if (!req.params.id) {
+    return res
+      .status(400)
+      .json({ error: 'loan_id_not_found' });
+  }
+
+  try {
+    const loan = await updatePaymentDate(req.params.id, req.body.payment_date);
+    res.status(200).json(loan);
+  } catch (error) {
+    res.status(500).json({ error: (error as Error).message });
+  }
+};

@@ -9,16 +9,43 @@ export const getLoans = async () => {
 };
 
 export const createLoan = async (loanData: {
+  employee_id: string;
   amount: number;
   term: number;
+  interest_rate: number;
+  status: string;
+  approval_date?: string;
+  payment_date?: string;
+  disbursement_status: string;
+  disbursement_date?: string;
 }) => {
-  const { amount, term } = loanData;
-  const result = await queryDatabase(
-    {
-      query: "INSERT INTO loans (amount, term) VALUES ($1, $2) RETURNING *",
-      params: [amount, term]
-    }
-  );
+  const {
+    employee_id,
+    amount,
+    term,
+    interest_rate,
+    status,
+    approval_date,
+    payment_date,
+    disbursement_status,
+    disbursement_date,
+  } = loanData;
+
+  const result = await queryDatabase({
+    query: `INSERT INTO loans (employee_id, amount, term, interest_rate, status, approval_date, payment_date, disbursement_status, disbursement_date) 
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *`,
+    params: [
+      employee_id,
+      amount,
+      term,
+      interest_rate,
+      status,
+      approval_date,
+      payment_date,
+      disbursement_status,
+      disbursement_date,
+    ],
+  });
   return result.rows[0];
 };
 
@@ -71,3 +98,19 @@ export const getLoansByCompany = async (company_id: string) => {
   });
   return result.rows;
 }
+
+export const updateApprovalDate = async (id: string, approval_date: string) => {
+  const result = await queryDatabase({
+    query: "UPDATE loans SET approval_date = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2 RETURNING *",
+    params: [approval_date, id],
+  });
+  return result.rows[0];
+};
+
+export const updatePaymentDate = async (id: string, payment_date: string) => {
+  const result = await queryDatabase({
+    query: "UPDATE loans SET payment_date = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2 RETURNING *",
+    params: [payment_date, id],
+  });
+  return result.rows[0];
+};

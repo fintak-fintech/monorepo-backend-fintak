@@ -1,25 +1,42 @@
-import { Pool } from 'pg';
-import dotenv from 'dotenv';
+import dotenv from "dotenv";
+import { Pool, PoolClient } from "pg";
+import { ServerError } from "./errors/Errors";
+import { QueryDatabaseType } from "./db.types";
+
 dotenv.config();
 
-const pool = new Pool({
-    user: process.env.DB_USER,
+let pool: Pool;
+
+const createConnection = async () => {
+  if (pool) return pool;
+
+  const newPool = new Pool({
     host: process.env.DB_HOST,
+    port: parseInt(process.env.DB_PORT ?? "", 10) || 5432,
     database: process.env.DB_NAME,
-    password: process.env.DB_PASSWORD,
-    port: Number(process.env.DB_PORT),
-});
+    user: process.env.DB_USERNAME,
+    password: String(process.env.DB_PASSWORD ?? ""),
+    max: 20,
+    idleTimeoutMillis: 30000,
+    connectionTimeoutMillis: 2000,
+  });
 
+  pool = newPool;
+  return newPool;
+};
 
-pool.on('connect', () => {
-    console.log('Connected to the PostgreSQL database');
-});
+export const queryDatabase = async ({ query, params }: QueryDatabaseType) => {
+  let client: PoolClient | null = null;
+  try {
+    const pool = await createConnection();
+    client = await pool.connect();
 
-
-pool.on('error', (err) => {
-    console.error('Error connecting to the PostgreSQL database', err);
-});
-
-export const db = {
-    query: (text: string, params?: any[]) => pool.query(text, params),
+    const result = await client.query(query, params);
+    return result;
+  } catch (error: any) {
+    console.log("error inside connection database", error);
+    throw new ServerError("Error database connection");
+  } finally {
+    if (client) client.release();
+  }
 };

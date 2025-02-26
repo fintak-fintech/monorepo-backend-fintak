@@ -7,8 +7,9 @@ import {
   createEmployeeController,
   updateEmployeeController,
   toggleEmployeeStatusController,
+  getEmployeesByCompanyIdController,
 } from "./controllers";
-import { employeeSchema, searchEmployeeSchema, editemployeeSchema, statusSchema, searchEmployeeIDSchema } from "./validators/employee";
+import { employeeSchema, editemployeeSchema, statusSchema, searchEmployeeIDSchema, searchCompanyIDSchema } from "./validators/employee";
 import { validateSchema } from "./middlewares/validation";
 
 const app = express();
@@ -42,6 +43,12 @@ app.patch(
       params: searchEmployeeIDSchema,
     }),
   toggleEmployeeStatusController
+);
+
+app.get(
+  "/employees/company/:company_id",
+  (req, res, next) => validateSchema(req, res, next, { params: searchCompanyIDSchema }),
+  getEmployeesByCompanyIdController
 );
 
 const PORT = process.env.PORT || 3000;

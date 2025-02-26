@@ -13,7 +13,7 @@ import {
 } from "./controllers";
 import { validateSchema } from "./middlewares/validation";
 
-import { companySchema, searchCompanySchema, searchCompanyIDschema, editCompanySchema, statusSchema } from "./validators/company";
+import { companySchema, searchCompanyIDschema, editCompanySchema, statusSchema } from "./validators/company";
 import { rateLimiter } from "./middlewares/rateLimiter";
 
 const app = express();
@@ -32,7 +32,7 @@ app.post(
 );
 
 app.put(
-  "/companies/:nit",
+  "/companies/:identification_number",
   rateLimiter,
   (req, res, next) =>
     validateSchema(req, res, next, {
@@ -43,7 +43,7 @@ app.put(
 );
 
 app.patch(
-  "/companies/:nit/status",
+  "/companies/:identification_number/status",
   (req, res, next) =>
     validateSchema(req, res, next, {
       body: statusSchema,
