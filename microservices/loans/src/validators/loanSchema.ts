@@ -3,6 +3,7 @@ import Joi from "joi";
 export const loanSchema = Joi.object({
   amount: Joi.number().required(),
   term: Joi.number().required(),
+  company_id: Joi.string().required(),
 });
 
 export const loanUpdateSchema = Joi.object({
@@ -11,7 +12,8 @@ export const loanUpdateSchema = Joi.object({
 });
 
 export const loanIdSchema = Joi.object({
-  id: Joi.string().required(),
+  loan_id: Joi.string().uuid().required(),
+  user_id: Joi.string().uuid().required()
 });
 
 export const userIdSchema = Joi.object({

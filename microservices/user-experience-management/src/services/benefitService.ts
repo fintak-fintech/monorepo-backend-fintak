@@ -1,8 +1,20 @@
 import { queryDatabase } from '../config/db';
 
-export const getBenefits = async () => {
+export const getBenefits = async (category: string, orderBy: string) => {
+  let query = `SELECT * FROM Benefits WHERE status = 'active'`;
+
+  if (category) {
+    query += ` AND category = $1`;
+  }
+  
+  if (orderBy === "date") {
+    query += ` ORDER BY validity_start ASC`;
+  } else if (orderBy === "popularity") {
+    query += ` ORDER BY created_at DESC`;
+  }
+
   const result = await queryDatabase({
-    query: 'SELECT * FROM benefits',
+    query,
     params: []
   });
   return result.rows;
@@ -49,7 +61,7 @@ export const toggleBenefitStatus = async (id: string) => {
 
 export const getBenefitById = async (id: string) => {
   const result = await queryDatabase({
-    query: 'SELECT * FROM benefits WHERE id = $1',
+    query: `SELECT * FROM Benefits WHERE id = $1 AND status = 'active'`,
     params: [id]
   });
   return result.rows[0];

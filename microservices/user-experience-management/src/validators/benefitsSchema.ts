@@ -13,3 +13,8 @@ export const benefitUpdateSchema = Joi.object({
 export const benefitIdSchema = Joi.object({
   id: Joi.string().required(),
 });
+
+export const benefitFilterSchemda = Joi.object({
+  category: Joi.string().optional(),
+  orderBy: Joi.string().valid("date", "popularity").optional()
+});

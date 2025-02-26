@@ -31,7 +31,10 @@ app.use(cors());
 app.use(json());
 app.use(urlencoded({ extended: true }));
 
-app.get('/benefits', getBenefitsController);
+app.get('/benefits',
+  (req, res, next) => validateSchema(req, res, next, { query: benefitSchema }),
+  getBenefitsController
+);
 app.post('/benefits',
   (req, res, next) => validateSchema(req, res, next, { body: benefitSchema }),
   (req: Request, res: Response, next: NextFunction) => authMiddleware(req, res, next),

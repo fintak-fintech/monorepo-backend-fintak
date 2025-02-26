@@ -2,7 +2,7 @@ import { queryDatabase } from "../config/db";
 
 export const getLoans = async () => {
   const result = await queryDatabase({
-    query: "SELECT * FROM loans",
+    query: "SELECT * FROM loans ORDER BY request_date DESC",
     params: [],
   });
   return result.rows;
@@ -36,18 +36,38 @@ export const updateLoan = async (
   return result.rows[0];
 };
 
-export const getLoanById = async (id: string) => {
+export const getLoanById = async (loan_id: string, user_id: string) => {
+  const query = `
+      SELECT id, amount, term, interest_rate, status, request_date, 
+             approval_date, payment_date, disbursement_status, disbursement_date 
+      FROM Loans 
+      WHERE id = $1 AND employee_id = $2`;
   const result = await queryDatabase({
-    query: "SELECT * FROM loans WHERE id = $1",
-    params: [id],
+    query: query,
+    params: [loan_id, user_id],
   });
   return result.rows[0];
 };
 
 export const getLoansByUserId = async (userId: string) => {
   const result = await queryDatabase({
-    query: "SELECT * FROM loans WHERE user_id = $1",
+    query: "SELECT * FROM loans WHERE employee_id = $1 ORDER BY request_date DESC",
     params: [userId],
   });
   return result.rows;
 };
+
+export const getLoansByCompany = async (company_id: string) => {
+  const query = `
+    SELECT l.*, e.first_name, e.last_name, e.company_id
+    FROM Loans l
+    JOIN Employees e ON l.employee_id = e.cognito_sub
+    WHERE e.company_id = $1
+    ORDER BY l.request_date DESC
+  `;
+  const result = await queryDatabase({
+    query,
+    params: [company_id]
+  });
+  return result.rows;
+}
