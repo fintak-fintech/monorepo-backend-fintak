@@ -6,9 +6,9 @@ import {
   getEmployeesController,
   createEmployeeController,
   updateEmployeeController,
-  deleteEmployeeController,
+  toggleEmployeeStatusController,
 } from "./controllers";
-import { employeeSchema, searchEmployeeSchema } from "./validators/employee";
+import { employeeSchema, searchEmployeeSchema, editemployeeSchema, statusSchema, searchEmployeeIDSchema } from "./validators/employee";
 import { validateSchema } from "./middlewares/validation";
 
 const app = express();
@@ -25,15 +25,24 @@ app.post(
   createEmployeeController
 );
 app.put(
-  "/employees/:id",
+  "/employees/:identification_number",
   (req, res, next) =>
     validateSchema(req, res, next, {
-      body: employeeSchema,
-      params: searchEmployeeSchema,
+      body: editemployeeSchema,
+      params: searchEmployeeIDSchema,
     }),
   updateEmployeeController
 );
-app.delete("/employees/:id", deleteEmployeeController);
+
+app.patch(
+  "/employees/:identification_number/status",
+  (req, res, next) =>
+    validateSchema(req, res, next, {
+      body: statusSchema,
+      params: searchEmployeeIDSchema,
+    }),
+  toggleEmployeeStatusController
+);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

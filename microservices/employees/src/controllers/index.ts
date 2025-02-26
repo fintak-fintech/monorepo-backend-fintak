@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { getEmployees, createEmployee, updateEmployee, deleteEmployee } from '../services/employeeService';
+import { getEmployees, createEmployee, updateEmployee, deleteEmployee, toggleEmployeeStatus } from '../services/employeeService';
 
 export const getEmployeesController = async (req: Request, res: Response) => {
     try {
@@ -12,26 +12,35 @@ export const getEmployeesController = async (req: Request, res: Response) => {
 
 export const createEmployeeController = async (req: Request, res: Response) => {
     try {
-        const employee = await createEmployee(req.body);
-        res.status(201).json(employee);
+        req.body.status = "1"; 
+        await createEmployee(req.body);
+        res.status(201).json({ message: 'Employee created successfully' });
     } catch (error) {
-        res.status(500).json({ error: (error as Error).message });
+        const err = error as Error;
+        if (err.message === 'Employee with this identification number or email already exists') {
+            res.status(400).json({ error: err.message });
+        } else {
+            res.status(500).json({ error: (error as Error).message });
+        }
     }
 };
 
 export const updateEmployeeController = async (req: Request, res: Response) => {
     try {
-        const employee = await updateEmployee(req.params.id, req.body);
-        res.status(200).json(employee);
+        const { identification_number } = req.params;
+        await updateEmployee(identification_number, req.body);
+        res.status(200).json({ message: 'Employee edit successfully' });
     } catch (error) {
         res.status(500).json({ error: (error as Error).message });
     }
 };
 
-export const deleteEmployeeController = async (req: Request, res: Response) => {
+export const toggleEmployeeStatusController = async (req: Request, res: Response) => {
     try {
-        await deleteEmployee(req.params.id);
-        res.status(204).send();
+        const { identification_number } = req.params;
+        const { status } = req.body;
+        await toggleEmployeeStatus(identification_number, status);
+        res.status(200).json({ message: 'Employee edited successfully' });
     } catch (error) {
         res.status(500).json({ error: (error as Error).message });
     }
