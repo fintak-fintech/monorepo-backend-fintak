@@ -1,8 +1,34 @@
 import { queryDatabase } from "../config/db";
 
-export const getLoans = async () => {
+type LoansFilterType = {
+  status?: string;
+  page: number;
+  limit: number;
+  offset: number;
+};
+
+export const getLoans = async ({
+  status,
+  page,
+  limit,
+  offset,
+}: LoansFilterType) => {
+  let query = `
+      SELECT id, amount, term, interest_rate, status, request_date, 
+             approval_date, payment_date, disbursement_status 
+      FROM Loans
+    `;
+  const queryParams = [];
+
+  if (status) {
+    query += ` AND status = $2`;
+    queryParams.push(status);
+  }
+
+  query += ` ORDER BY request_date DESC LIMIT $3 OFFSET $4`;
+  queryParams.push(String(limit), String(offset));
   const result = await queryDatabase({
-    query: "SELECT * FROM loans ORDER BY request_date DESC",
+    query,
     params: [],
   });
   return result.rows;
@@ -54,16 +80,20 @@ export const updateLoan = async (
   loanData: { amount: number; term: number }
 ) => {
   const { amount, term } = loanData;
-  const result = await queryDatabase(
-    {
-      query: "UPDATE loans SET amount = $1, term = $2 WHERE id = $3 RETURNING *",
-      params: [amount, term, id]
-    }
-  );
+  const result = await queryDatabase({
+    query: "UPDATE loans SET amount = $1, term = $2 WHERE id = $3 RETURNING *",
+    params: [amount, term, id],
+  });
   return result.rows[0];
 };
 
-export const getLoanById = async (loan_id: string, user_id: string) => {
+export const getLoanById = async ({
+  loan_id,
+  user_id,
+}: {
+  loan_id: string;
+  user_id: string;
+}) => {
   const query = `
       SELECT id, amount, term, interest_rate, status, request_date, 
              approval_date, payment_date, disbursement_status, disbursement_date 
@@ -76,10 +106,33 @@ export const getLoanById = async (loan_id: string, user_id: string) => {
   return result.rows[0];
 };
 
-export const getLoansByUserId = async (userId: string) => {
+export const getLoansByUserId = async ({
+  user_id,
+  filter,
+}: {
+  user_id: string;
+  filter: LoansFilterType;
+}) => {
+  let query = `
+      SELECT id, amount, term, interest_rate, status, request_date, 
+             approval_date, payment_date, disbursement_status 
+      FROM Loans 
+      WHERE employee_id = $1
+    `;
+
+  const queryParams = [user_id];
+
+  if (filter.status) {
+    query += ` AND status = $2`;
+    queryParams.push(filter.status);
+  }
+
+  query += ` ORDER BY request_date DESC LIMIT $3 OFFSET $4`;
+  queryParams.push(String(filter.limit), String(filter.offset));
+
   const result = await queryDatabase({
-    query: "SELECT * FROM loans WHERE employee_id = $1 ORDER BY request_date DESC",
-    params: [userId],
+    query,
+    params: queryParams,
   });
   return result.rows;
 };
@@ -94,22 +147,25 @@ export const getLoansByCompany = async (company_id: string) => {
   `;
   const result = await queryDatabase({
     query,
-    params: [company_id]
+    params: [company_id],
   });
   return result.rows;
-}
+};
 
 export const updateApprovalDate = async (id: string, approval_date: string) => {
   const result = await queryDatabase({
-    query: "UPDATE loans SET approval_date = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2 RETURNING *",
+    query:
+      "UPDATE loans SET approval_date = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2 RETURNING *",
     params: [approval_date, id],
   });
+
   return result.rows[0];
 };
 
 export const updatePaymentDate = async (id: string, payment_date: string) => {
   const result = await queryDatabase({
-    query: "UPDATE loans SET payment_date = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2 RETURNING *",
+    query:
+      "UPDATE loans SET payment_date = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2 RETURNING *",
     params: [payment_date, id],
   });
   return result.rows[0];

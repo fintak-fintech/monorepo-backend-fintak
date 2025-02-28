@@ -18,7 +18,7 @@ import {
   createSimulateLoanController,
 } from "./controllers/simulateLoanController";
 import { validateSchema } from "./middlewares/validation";
-import { loanIdSchema, loanSchema, updateApprovalDateSchema, updatePaymentDateSchema } from "./validators/loanSchema";
+import { loanIdSchema, loanIdUserIdSchema, loanSchema, updateApprovalDateSchema, updatePaymentDateSchema } from "./validators/loanSchema";
 import { simulateLoanSchema, userIdSchema } from "./validators/simulationSchema";
 
 dotenv.config();
@@ -49,7 +49,7 @@ app.post(
 );
 app.get(
   "/loans/:loan_id/user/:user_id",
-  (req, res, next) => validateSchema(req, res, next, { params: loanIdSchema }),
+  (req, res, next) => validateSchema(req, res, next, { params: loanIdUserIdSchema }),
   getLoanByIdController
 );
 app.get(
@@ -58,13 +58,13 @@ app.get(
   getLoansByUserIdController
 );
 app.put(
-  "/loans/:id/approval-date",
+  "/loans/:loan_id/approval-date",
   (req, res, next) => validateSchema(req, res, next, { body: updateApprovalDateSchema, params: loanIdSchema }),
   updateApprovalDateController
 );
 
 app.put(
-  "/loans/:id/payment-date",
+  "/loans/:loan_id/payment-date",
   (req, res, next) => validateSchema(req, res, next, { body: updatePaymentDateSchema, params: loanIdSchema }),
   updatePaymentDateController
 );

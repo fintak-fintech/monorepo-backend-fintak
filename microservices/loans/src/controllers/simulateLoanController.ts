@@ -1,9 +1,10 @@
 import { Request, Response } from 'express';
 import { getLastSimulationByUser, getSimulationsByUser, saveSimulation } from '../services/simulateLoanService';
 import { getInterestRate } from '../services/interestRateService';
+import { generateAmortizationTable } from '../utils/amortizationTable';
 
-const MAX_AMOUNT = 50000;
-const MAX_TERM = 60;
+const MAX_AMOUNT = 500000000;
+const MAX_TERM = 240;
 
 export const createSimulateLoanController = async (req: Request, res: Response) => {
   const {
@@ -36,42 +37,18 @@ export const createSimulateLoanController = async (req: Request, res: Response) 
     }
   }
 
-  const monthly_interest = (interest / 12) / 100;
-  const fee = (amount * monthly_interest) / (1 - Math.pow(1 + monthly_interest, -term));
-
-  const total_interest = (fee * term) - amount;
-  const total_cost = amount + total_interest;
-
-  let balance = amount;
-  const amortization_table = [];
-  for (let i = 1; i <= term; i++) {
-    const interest_payment = balance * monthly_interest;
-    const principal_payment = fee - interest_payment;
-    balance -= principal_payment;
-
-    amortization_table.push({
-      month: i,
-      interest_payment: interest_payment.toFixed(2),
-      principal_payment: principal_payment.toFixed(2),
-      total_payment: fee.toFixed(2),
-      remaining_balance: balance.toFixed(2)
-    });
-  }
+  const amortization_table = generateAmortizationTable(amount, term, interest);
 
   try {
     let result = {
       amount,
       term,
       annual_interest,
-      monthly_interest,
-      simulation_result: fee.toFixed(2),
-      total_interest: total_interest.toFixed(2),
-      total_cost: total_cost.toFixed(2),
-      amortization_table
+      ...amortization_table
     };
 
     if (user_id) {
-      await saveSimulation(user_id, amount, term, annual_interest, fee.toFixed(2));
+      await saveSimulation(user_id, amount, term, annual_interest, Number(amortization_table.monthly_payment).toFixed(2));
     }
     res.json({ message: "simulate_loan_executed", simulation: result });
   } catch (error) {

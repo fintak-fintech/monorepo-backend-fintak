@@ -19,6 +19,10 @@ export const loanUpdateSchema = Joi.object({
 });
 
 export const loanIdSchema = Joi.object({
+  loan_id: Joi.string().uuid().required()
+});
+
+export const loanIdUserIdSchema = Joi.object({
   loan_id: Joi.string().uuid().required(),
   user_id: Joi.string().uuid().required()
 });
